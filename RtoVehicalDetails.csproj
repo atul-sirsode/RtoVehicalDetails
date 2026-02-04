@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>false</IsPackable>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+    <SpaProxyServerUrl>https://localhost:44466</SpaProxyServerUrl>
+    <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="9.0.10" />
+  </ItemGroup>
+
+	<!-- No SPA packages needed -->
+	<Target Name="BuildClientApp" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Release' ">
+		<Message Text="Building ClientApp...(Release configuration)" Importance="high" />
+		<Exec Command="npm install" WorkingDirectory="ClientApp" />
+		<Exec Command="npm run build" WorkingDirectory="ClientApp" />
+	</Target>
+
+	<Target Name="BuildClientAppDebug" BeforeTargets="Build" Condition=" '$(Configuration)' != 'Release' ">
+		<Message Text="Building ClientApp...(Debug configuration)" Importance="high" />
+		<Exec Command="npm install" WorkingDirectory="ClientApp" />
+		<Exec Command="npm run build" WorkingDirectory="ClientApp" />
+	</Target>
+	<ItemGroup>
+		<!-- Include your React app files -->
+		<Content Remove="ClientApp\**" />
+		<None Remove="ClientApp\**" />
+		<None Include="ClientApp\**" Exclude="ClientApp\node_modules\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Folder Include="ClientApp\src\contexts\" />
+	</ItemGroup>
+</Project>
